@@ -1,0 +1,198 @@
+﻿@page "/"
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+
+@inject CinemaDbContext DbContext
+@inject NavigationManager NavigationManager
+
+<PageTitle>Cartelera de Cine</PageTitle>
+
+<MudGrid Justify="Justify.Center" Class="paginaPrincipal">
+    <!-- Columna de anuncios en el lado izquierdo -->
+    <MudContainer Class="anuncioLateralContainer fixed-container-izquierda mt-4">
+        <MudPaper Class="anuncioLateral">
+            <MudText Typo="Typo.h5" Align="Align.Center">¡¡COMPRA PALOMITAS YAA!!</MudText>
+            <MudDivider Class="my-4" />
+            <MudImage Src="images/palomitas.jpg" Alt="Palomitas de maíz" MaxWidth="300px" Class="mx-auto" />
+            <MudText Align="Align.Center">
+                ¡Disfruta de nuestras deliciosas palomitas! Siendo socio, llévate un combo grande con un refresco y recibe un descuento especial en tu próxima película.
+            </MudText>
+            <MudButton Variant="Variant.Filled" Class="socio" FullWidth="true" OnClick="HacerseSocio">
+                Hazte Socio Ya
+            </MudButton>
+        </MudPaper>
+
+        <MudPaper Class="anuncioLateral mt-3">
+            <MudText Typo="Typo.h5" Align="Align.Center">TUS DECISIONES NOS IMPORTAN</MudText>
+            <MudDivider Class="my-4" />
+            <MudText Align="Align.Center">El efecto mariposa, una pelicula que te hará pensar en tus decisiones y tus actos.Disfrutala ahora solo aqui.</MudText>
+            <MudImage Src="images/click.png" @onclick="Estreno" Alt="Click here" MaxWidth="300px" Class="mx-auto" />
+        </MudPaper>
+    </MudContainer>
+
+    <!-- Columna central para la cartelera de cine -->
+    <MudItem xs="12" sm="8" md="8">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="barraBusqueda">
+            <MudTextField Label="Buscar Películas Disponibles en Nuestro Cine"
+                          @bind-Value="searchTerm"
+                          Icon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          OnKeyUp="OnSearch" />
+        </MudContainer>
+
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-5">
+            <MudCard Typo="Typo.h1" Align="Align.Center" Class="tituloPrincipal">Programación Semanal - Cine Local</MudCard>
+
+            @if (filteredSesiones.Any())
+            {
+                <MudGrid Spacing="3">
+                    @foreach (var sesion in filteredSesiones)
+                    {
+                        <MudItem xs="12" sm="6" md="4" lg="3">
+                            <MudListItem T="Sesion" OnClick="() => NavigateToPelicula(sesion)" Class="busqueda">
+                                <div>
+                                    <strong>@sesion.Pelicula.Nombre</strong><br />
+                                    <span>Sala: @sesion.Sala.NumeroSala</span><br />
+                                    <span>Día: @sesion.Dia.DiaSemana</span><br />
+                                    <span>Hora: @sesion.Hora</span>
+                                </div>
+                            </MudListItem>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+            else if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                <MudCard Class="sinResultado">No se encontraron resultados.</MudCard>
+            }
+
+            @foreach (var sala in sesiones.GroupBy(s => s.Sala.NumeroSala))
+            {
+                <MudPaper Class="p-3 mt-4 dia">
+                    <MudText Typo="Typo.h4" Class="sala">Sala @sala.Key</MudText>
+                    <MudGrid Spacing="3" Class="sala">
+                        @foreach (var dia in sala.GroupBy(s => s.Dia.DiaSemana))
+                        {
+                            <MudItem xs="12" sm="6" md="4">
+                                <MudCard Class="mb-3 dia">
+                                    <MudCardHeader>
+                                        <MudText Typo="Typo.h6">@dia.Key</MudText>
+                                    </MudCardHeader>
+                                    <MudCardContent>
+                                        @foreach (var sesion in dia.DistinctBy(s => s.Pelicula.Nombre))
+                                        {
+                                            <MudButton OnClick="() => NavigateToPelicula(sesion)" Class="peli">
+                                                @sesion.Pelicula.Nombre - @sesion.Hora
+                                            </MudButton>
+                                        }
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudItem>
+                        }
+                    </MudGrid>
+                </MudPaper>
+            }
+        </MudContainer>
+        <MudContainer Style="height: 170px;"></MudContainer>
+    </MudItem>
+    
+
+    <!-- Columna de anuncios en el lado derecho -->
+    <MudContainer Class="anuncioLateralContainer fixed-container-derecha mt-4">
+        <MudPaper Class="anuncioLateral">
+            <MudText Typo="Typo.h5" Align="Align.Center">ÚLTIMA LLAMADA A TODOS LOS PIRATAS</MudText>
+            <MudDivider Class="my-4" />
+            <MudText Align="Align.Center">
+                ¡La última oportunidad para zarpar hacia nuevas aventuras! No te pierdas la última sesión de Piratas del Caribe en pantalla grande, con sorpresas y un ambiente de pirata único. ¡Prepara tu parche y tu espada, porque el barco zarpa pronto!
+            </MudText>
+            <MudImage Src="images/mapa.png" @onclick="Despedida" Alt="Click here" MaxWidth="300px" Class="mx-auto" />
+        </MudPaper>
+
+        <MudPaper Class="anuncioLateral mt-3">
+            <MudText Typo="Typo.h5" Align="Align.Center">LOS VIERNES DEL ESPECTADOR</MudText>
+            <MudDivider Class="my-4" />
+            <MudText Align="Align.Center">
+                Todos los viernes te espera un gran descuento en tu entrada. Por la compra de un paquete de 500g de palomitas, obtén tu entrada <u><b>GRATIS</b></u> y disfruta durante toda la película con la gran cantidad de palomitas.
+            </MudText>
+            <MudDivider Class="my-4" />
+            <MudText Align="Align.Center">**REFRESCOS/BEBIDAS NO INCLUIDAS**</MudText>
+        </MudPaper>
+    </MudContainer>
+
+    <MudContainer Class="contactosPrincipal">
+        <MudText Typo="Typo.h4"><u>Contáctenos</u></MudText>
+        <br />
+        📧 Correo Electrónico:
+        <MudLink Href="mailto:herreraroblesramon@gmail.com" Target="_blank">
+            herreraroblesramon@gmail.com
+        </MudLink>
+        <br />
+        📷 Instagram:
+        <MudLink Href="https://www.instagram.com/rammoon13/" Target="_blank">
+            &#64;rammoon13
+        </MudLink>
+    </MudContainer>
+</MudGrid>
+
+@code {
+    private string searchTerm = string.Empty;
+    private List<Sesion> sesiones = new();
+    private List<Sesion> filteredSesiones = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        sesiones = await DbContext.Sesion
+            .Include(s => s.Pelicula)
+            .Include(s => s.Sala)
+            .Include(s => s.Dia)
+            .ToListAsync();
+
+        filteredSesiones = new List<Sesion>();
+    }
+
+    private void OnSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredSesiones = sesiones
+                .Where(s => s.Pelicula.Nombre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        else
+        {
+            filteredSesiones.Clear();
+        }
+    }
+
+    private void Estreno()
+    {
+        var sesion = sesiones.FirstOrDefault(s => s.Pelicula.Nombre == "El Efecto Mariposa");
+        if (sesion != null)
+        {
+            NavigateToPelicula(sesion);
+        }
+    }
+
+    private void Despedida()
+    {
+        var sesion = sesiones.FirstOrDefault(s => s.Pelicula.Nombre == "Piratas del Caribe");
+        if (sesion != null)
+        {
+            NavigateToPelicula(sesion);
+        }
+    }
+
+    private void NavigateToPelicula(Sesion sesion)
+    {
+        if (sesion != null)
+        {
+            NavigationManager.NavigateTo($"/pelicula/{sesion.Id}/{sesion.Pelicula.Nombre}/{sesion.Sala.NumeroSala}/{sesion.Dia.DiaSemana}/{sesion.Hora}");
+        }
+    }
+
+    private void HacerseSocio()
+    {
+        NavigationManager.NavigateTo("/hacerse-socio");
+    }
+}

@@ -1,0 +1,29 @@
+﻿@inherits MudComponentBase
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h5">¡Bienvenido, @NombreUsuario!</MudText>
+        <MudText Typo="Typo.body2">Gracias por hacerte socio de nuestro cine. Disfruta de increíbles beneficios y descuentos exclusivos.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Volver">Volver</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string NombreUsuario { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void Volver()
+    {
+        MudDialog.Close();
+        NavigationManager.NavigateTo("/");
+    }
+}

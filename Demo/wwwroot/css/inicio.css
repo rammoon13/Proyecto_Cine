@@ -1,0 +1,219 @@
+﻿/* Establecer el fondo de la página */
+body {
+    background-image: url('/images/sala.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+/* Otros estilos */
+.barraBusqueda {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 5px;
+    color: white;
+    background-color: rgba(169, 169, 169, 1); 
+}
+
+.tituloPeli {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0); 
+}
+
+.weekday-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.dia {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.65); 
+    color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.peli {
+    margin-top: 5px;
+    width: 100%;
+    font-size: 0.9em;
+    background-color: rgba(255, 255, 255, 1); 
+    color: black;
+    text-transform: uppercase;
+}
+
+    .peli:hover {
+        background-color: rgba(107, 107, 107, 0.8); 
+    }
+
+.busqueda {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8); 
+}
+
+    .busqueda:hover {
+        background-color: rgba(107, 107, 107, 0.8); 
+    }
+
+.sinResultado {
+    margin-top: 10px;
+    width: 100%;
+    color: white;
+    border: 1px solid #dee2e6;
+    background-color: rgba(0, 0, 0, 0.65); 
+}
+
+.regresar {
+    margin-top: 5px;
+    background-color: rgba(255, 255, 255, 0.8); 
+    color: black;
+    text-transform: uppercase;
+}
+
+    .regresar:hover {
+        background-color: rgba(107, 107, 107, 0.8); 
+    }
+
+.cartelera {
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0); 
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.detalles {
+    border: 1px solid #dee2e6;
+    font-weight: bold;
+    color: #ffffff;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.65); 
+}
+
+.dialog {
+    border: 1px solid #dee2e6;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.anuncioLateralContainer {
+    max-width: 350px;
+}
+
+.tituloPrincipal {
+    text-align: center;
+}
+
+.paginaPrincipal {
+    padding: 20px;
+}
+
+.fixed-container-derecha {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 450px;
+}
+
+.fixed-container-izquierda {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 450px;
+}
+
+.mx-auto{
+    width:275px;
+}
+
+.sala {
+    font-weight: bold;
+    color: #ffffff;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.anuncioLateral {
+    padding: 1em;
+    color: #ffffff;
+    background-color: #000000;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.tituloPrincipal {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+    color: white;
+    border: 1px solid #dee2e6;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.contactosPrincipal {
+    background-color: rgba(0, 0, 0, 0.92);
+    border: 1px solid #dee2e6;
+    color: white;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 25px;
+    position:fixed;
+    bottom:20px;
+}
+
+.contactos {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid #dee2e6;
+    color: white;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 25px;
+}
+
+
+.socio {
+    background-color: rgb(71, 71, 71, 0.8);
+    color: white !important;
+}
+    .socio:hover {
+    background-color: rgba(43, 43, 43, 0.8);
+    }
+
+.cancel {
+    margin-top: 5px;
+    width: 100%;
+    font-size: 0.9em;
+    background-color: rgba(252, 58, 58, 1);
+    color: black;
+    text-transform: uppercase;
+}
+
+    .cancel:hover {
+        background-color: rgba(204, 0, 0, 0.8);
+    }
+
+.white-text .mud-input {
+    color: white !important;
+}
+
+.white-text .mud-input-label {
+    color: white !important;
+}
+
+.white-text .mud-input::placeholder {
+    color: rgba(255,255,255,0.7) !important;
+}

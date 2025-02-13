@@ -1,0 +1,121 @@
+﻿@page "/pelicula/{id:int}/{titulo}/{sala}/{dia}/{horario}"
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject CinemaDbContext DbContext
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-5">
+    @if (sesion != null)
+    {
+        <MudPaper Class="p-3 detalles">
+            <!-- Título de la película -->
+            <MudText Class="tituloPeli" Typo="Typo.h2" Align="Align.Center">@sesion.Pelicula.Nombre</MudText>
+
+            <!-- Línea de separación -->
+            <MudDivider Class="my-4" />
+
+            <!-- MudGrid para poner la imagen y el resumen al lado -->
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <!-- Imagen con evento de clic para abrir el diálogo -->
+                    <MudImage Src="@sesion.Pelicula.ImagenUrl" Alt="@sesion.Pelicula.Nombre" Width="405" Class="cartelera" @onclick="() => MostrarImagenAmpliada()" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.body1" Class="mt-4">@sesion.Pelicula.Descripcion</MudText>
+                    <!-- MudRating debajo del resumen -->
+                    <div class="d-flex flex-column align-center mt-4">
+                        <MudRating @bind-SelectedValue="selectedRating" Max="5" Class="sala" />
+                        <MudText Typo="Typo.subtitle2" Class="mt-2">
+                            @($"Calificación: {selectedRating} estrellas")
+                        </MudText>
+                    </div>
+                    <div class="d-flex flex-column align-center mt-4">
+                        <MudItem xs="12" Class="d-flex justify-center ">
+                            <!-- Botón para comprar entradas-->
+                            <MudButton OnClick="ComprarEntradas" Class="mt-4 regresar" Style="font-size: 1.2rem; padding: 20px 40px; min-width: 200px;">
+                                COMPRAR ENTRADAS
+                            </MudButton>
+                        </MudItem>
+                    </div>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Botón de regresar centrado y más grande -->
+            <MudGrid>
+                <MudItem xs="12" Class="d-flex justify-center ">
+                    <MudButton OnClick="Regresar" Class="mt-4 regresar" Style="font-size: 1.5rem; padding: 20px 40px; min-width: 200px;">
+                        Regresar
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" Align="Align.Center">Cargando sesión...</MudText>
+    }
+</MudContainer>
+
+<MudContainer Class="contactos">
+    <MudText Typo="Typo.h4"><u>Contáctenos</u></MudText>
+    <br />
+    📧 Correo Electrónico:
+    <MudLink Href="mailto:herreraroblesramon@gmail.com" Target="_blank">
+        herreraroblesramon@gmail.com
+    </MudLink>
+    <br />
+    📷 Instagram:
+    <MudLink Href="https://www.instagram.com/rammoon13/" Target="_blank">
+        &#64;rammoon13
+    </MudLink>
+</MudContainer>
+
+@code {
+    [Parameter] public int id { get; set; }  
+    [Parameter] public string titulo { get; set; }
+    [Parameter] public string sala { get; set; }
+    [Parameter] public string dia { get; set; }
+    [Parameter] public string horario { get; set; }
+
+    private Sesion? sesion;  
+    private int selectedRating = 0;
+
+    /// <summary>
+    /// Método que se ejecuta cuando el componente se inicializa.
+    /// Busca la sesión en la base de datos según su ID.
+    /// Si no se encuentra, redirige a la página principal.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        sesion = await DbContext.Sesion
+            .Include(s => s.Pelicula)
+            .Include(s => s.Sala)
+            .Include(s => s.Dia)
+            .Where(s => s.Id == id)  
+            .FirstOrDefaultAsync();
+
+        if (sesion == null)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private void Regresar()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void ComprarEntradas()
+    {
+        Navigation.NavigateTo($"/comprar-entradas/{id}");
+    }
+
+    private async Task MostrarImagenAmpliada()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, NoHeader = true };
+        var parameters = new DialogParameters { ["ImagenUrl"] = sesion?.Pelicula.ImagenUrl };
+        await DialogService.ShowAsync<ImagenDialog>("", parameters, options);
+    }
+}

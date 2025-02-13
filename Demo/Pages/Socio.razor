@@ -1,0 +1,167 @@
+﻿@page "/hacerse-socio"
+
+@using System.ComponentModel.DataAnnotations
+@using MudBlazor
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+
+@inject CinemaDbContext DbContext
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudContainer Class="dia">
+    <MudCard Class="dia">
+        <MudCardHeader>
+            <MudText Typo="Typo.h4">Hazte Socio de Nuestro Cine</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <EditForm Model="@registroSocio" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.NombreUsuario"
+                                      Label="Nombre de Usuario"
+                                      Required="true"
+                                      RequiredError="El nombre de usuario es obligatorio"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.Nombre"
+                                      Label="Nombre"
+                                      Required="true"
+                                      RequiredError="El nombre es obligatorio"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.Apellidos"
+                                      Label="Apellidos"
+                                      Required="true"
+                                      RequiredError="Los apellidos son obligatorios"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudDatePicker @bind-Date="registroSocio.FechaNacimiento"
+                                       Label="Fecha de Nacimiento"
+                                       Required="true"
+                                       RequiredError="La fecha de nacimiento es obligatoria"
+                                       Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.Ciudad"
+                                      Label="Ciudad"
+                                      Required="true"
+                                      RequiredError="La ciudad es obligatoria"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.PeliculaFavorita"
+                                      Label="Película Favorita"
+                                      Required="true"
+                                      RequiredError="La película favorita es obligatoria"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.CorreoElectronico"
+                                      Label="Correo Electrónico"
+                                      Required="true"
+                                      RequiredError="El correo electrónico es obligatorio"
+                                      Class="white-text" />
+                    </MudItem>
+                    <MudItem xs="12" md="6">
+                        <MudTextField @bind-Value="registroSocio.Telefono"
+                                      Label="Número de Teléfono"
+                                      Required="true"
+                                      RequiredError="El número de teléfono es obligatorio"
+                                      InputType="InputType.Telephone"
+                                      Class="white-text" />
+                    </MudItem>
+                </MudGrid>
+                <MudCardActions>
+                    <MudButton Class="peli" ButtonType="ButtonType.Submit" Variant="Variant.Filled">
+                        Hacerte Socio
+                    </MudButton>
+                    <MudButton Class="cancel" Variant="Variant.Outlined" OnClick="CancelarRegistro">
+                        Cancelar
+                    </MudButton>
+                </MudCardActions>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private RegistroSocio registroSocio = new();
+
+    private async Task HandleValidSubmit()
+    {
+        var usuarioExistente = await DbContext.Usuarios
+            .FirstOrDefaultAsync(u => u.NombreUsuario == registroSocio.NombreUsuario || u.CorreoElectronico == registroSocio.CorreoElectronico);
+
+        if (usuarioExistente != null)
+        {
+            await DialogService.ShowMessageBox("Error", "El nombre de usuario o correo electrónico ya está en uso.", "Aceptar");
+            return;
+        }
+
+        var nuevoUsuario = new Usuario
+            {
+                NombreUsuario = registroSocio.NombreUsuario,
+                Nombre = registroSocio.Nombre,
+                Apellidos = registroSocio.Apellidos,
+                FechaNacimiento = registroSocio.FechaNacimiento.Value,
+                Ciudad = registroSocio.Ciudad,
+                PeliculaFavorita = registroSocio.PeliculaFavorita,
+                CorreoElectronico = registroSocio.CorreoElectronico,
+                Telefono = registroSocio.Telefono
+            };
+
+        DbContext.Usuarios.Add(nuevoUsuario);
+        await DbContext.SaveChangesAsync();
+
+        await DialogService.ShowMessageBox("Registro exitoso", "Te has registrado correctamente como socio.", "Aceptar");
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task CancelarRegistro()
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Confirmación",
+            "¿Está seguro de que desea cancelar el registro?",
+            yesText: "Sí", cancelText: "No");
+
+        if (result == true)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    public class RegistroSocio
+    {
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
+        public string NombreUsuario { get; set; }
+
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        public string Nombre { get; set; }
+
+        [Required(ErrorMessage = "Los apellidos son obligatorios")]
+        public string Apellidos { get; set; }
+
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria")]
+        public DateTime? FechaNacimiento { get; set; }
+
+        [Required(ErrorMessage = "La ciudad es obligatoria")]
+        public string Ciudad { get; set; }
+
+        [Required(ErrorMessage = "La película favorita es obligatoria")]
+        public string PeliculaFavorita { get; set; }
+
+        [Required(ErrorMessage = "El correo electrónico es obligatorio")]
+        [EmailAddress(ErrorMessage = "El correo electrónico no es válido")]
+        public string CorreoElectronico { get; set; }
+
+        [Required(ErrorMessage = "El número de teléfono es obligatorio")]
+        [Phone(ErrorMessage = "El número de teléfono no es válido")]
+        public string Telefono { get; set; }
+    }
+}
