@@ -1,0 +1,182 @@
+﻿@page "/comprar-entradas/{id:int}/{titulo}"
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject CinemaDbContext DbContext
+
+<style>
+    .borde-redondeado {
+        border-radius: 15px;
+    }
+
+    .boton-contador {
+        font-size: 1.5rem;
+        padding: 5px 15px;
+    }
+
+        .boton-contador:hover {
+            background-color: rgba(43, 43, 43, 0.8);
+        }
+
+    .boton-accion {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+    }
+</style>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-5">
+    @if (sesion != null)
+    {
+        <MudPaper Class="p-4 detalles borde-redondeado">
+            <MudGrid>
+                <!-- Imagen de la película -->
+                <MudItem xs="12" sm="4">
+                    <MudImage Src="@sesion.Pelicula.ImagenUrl" Alt="@sesion.Pelicula.Nombre" Width="550" Class="cartelera borde-redondeado" />
+                </MudItem>
+
+                <!-- Selección de entradas y consumibles -->
+                <MudItem xs="12" sm="4">
+                    <MudPaper Class="p-3 detalles borde-redondeado">
+                        <MudText Typo="Typo.h4" Align="Align.Center">Elige los asientos y consumibles</MudText>
+                        <MudDivider Class="my-2" />
+
+                        @foreach (var item in productos)
+                        {
+                            <MudGrid Class="mb-2">
+                                <MudItem xs="8">
+                                    <MudText Typo="Typo.h6">@item.Nombre</MudText>
+                                </MudItem>
+                                <MudItem xs="4" Class="d-flex align-center justify-end">
+                                    <MudButton OnClick="() => CambiarCantidad(item, -1)" Disabled="@((item.Cantidad == 0))" Color="Color.Default" Class="boton-contador">-</MudButton>
+                                    <MudText Class="mx-2" Typo="Typo.h6">@item.Cantidad</MudText>
+                                    <MudButton OnClick="() => CambiarCantidad(item, 1)" Color="Color.Default" Class="boton-contador">+</MudButton>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Resumen de compra -->
+                <MudItem xs="12" sm="4">
+                    <MudPaper Class="p-3 detalles borde-redondeado">
+                        <MudText Typo="Typo.h4" Align="Align.Center">@sesion.Pelicula.Nombre</MudText>
+                        <MudText Typo="Typo.h6" Align="Align.Center">Sala @sesion.Sala.NumeroSala, @sesion.Dia.DiaSemana, @sesion.Hora</MudText>
+                        <MudDivider Class="my-2" />
+
+                        <MudText Typo="Typo.h6">Nº de asientos: @productos.First(p => p.Nombre == "Entradas").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Palomitas pequeñas: @productos.First(p => p.Nombre == "Palomitas pequeñas").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Palomitas medianas: @productos.First(p => p.Nombre == "Palomitas medianas").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Palomitas grandes: @productos.First(p => p.Nombre == "Palomitas grandes").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Refrescos pequeños: @productos.First(p => p.Nombre == "Refrescos pequeños").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Refrescos medianos: @productos.First(p => p.Nombre == "Refrescos medianos").Cantidad</MudText>
+                        <MudText Typo="Typo.h6">Refrescos grandes: @productos.First(p => p.Nombre == "Refrescos grandes").Cantidad</MudText>
+                        <MudDivider Class="my-2" />
+                        <MudText Typo="Typo.h5">Total: @total€</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <!-- Botones de acción -->
+            <MudGrid Class="mt-4">
+                <MudItem xs="6" Class="d-flex justify-center">
+                    <MudButton OnClick="ConfirmarCancelacion" Color="Color.Error" Class="boton-accion">Cancelar</MudButton>
+                </MudItem>
+                <MudItem xs="6" Class="d-flex justify-center">
+                    <MudButton OnClick="ConfirmarCompra" Color="Color.Success" Class="boton-accion">Confirmar</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    }
+    else
+    {
+        <MudText Typo="Typo.h6" Align="Align.Center">Cargando sesión o sesión no encontrada...</MudText>
+    }
+</MudContainer>
+<MudContainer Class="contactos">
+    <MudText Typo="Typo.h4"><u>Contáctenos</u></MudText>
+    <br />
+    📧 Correo Electrónico:
+    <MudLink Href="mailto:herreraroblesramon@gmail.com" Target="_blank">
+        herreraroblesramon@gmail.com
+    </MudLink>
+    <br />
+    📷 Instagram:
+    <MudLink Href="https://www.instagram.com/rammoon13/" Target="_blank">
+        &#64;rammoon13
+    </MudLink>
+</MudContainer>
+
+@code {
+    [Parameter] public int id { get; set; }
+    [Parameter] public string titulo { get; set; }
+
+    private Sesion? sesion;
+    private List<Producto> productos = new();
+    private int total => productos.Sum(p => p.Cantidad * p.Precio);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            sesion = await DbContext.Sesion
+                .Include(s => s.Pelicula)
+                .Include(s => s.Sala)
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar la sesión: {ex.Message}");
+        }
+
+        if (sesion == null)
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        productos = new List<Producto>
+        {
+            new Producto("Entradas", 5),
+            new Producto("Palomitas pequeñas", 1),
+            new Producto("Palomitas medianas", 2),
+            new Producto("Palomitas grandes", 3),
+            new Producto("Refrescos pequeños", 1),
+            new Producto("Refrescos medianos", 2),
+            new Producto("Refrescos grandes", 3)
+        };
+    }
+
+    private void CambiarCantidad(Producto producto, int cantidad)
+    {
+        producto.Cantidad = Math.Max(0, producto.Cantidad + cantidad);
+    }
+
+    private async Task ConfirmarCompra()
+    {
+        await DialogService.ShowMessageBox("Compra realizada", "Tu compra se ha realizado con éxito.");
+        Navigation.NavigateTo("/");
+    }
+
+    private async Task ConfirmarCancelacion()
+    {
+        var result = await DialogService.ShowMessageBox("Cancelar compra", "¿Estás seguro de cancelar?", "Sí", "No");
+        if (result == true)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+
+    private class Producto
+    {
+        public string Nombre { get; set; }
+        public int Precio { get; set; }
+        public int Cantidad { get; set; } = 0;
+        public Producto(string nombre, int precio)
+        {
+            Nombre = nombre;
+            Precio = precio;
+        }
+    }
+}

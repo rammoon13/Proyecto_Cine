@@ -34,7 +34,7 @@
                     <div class="d-flex flex-column align-center mt-4">
                         <MudItem xs="12" Class="d-flex justify-center ">
                             <!-- Botón para comprar entradas-->
-                            <MudButton OnClick="Regresar" Class="mt-4 regresar" Style="font-size: 1.2rem; padding: 20px 40px; min-width: 200px;">
+                            <MudButton OnClick="ComprarEntradas" Class="mt-4 regresar" Style="font-size: 1.2rem; padding: 20px 40px; min-width: 200px;">
                                 COMPRAR ENTRADAS
                             </MudButton>
                         </MudItem>
@@ -109,7 +109,7 @@
 
     private void ComprarEntradas()
     {
-        Navigation.NavigateTo($"/comprar-entradas/{id}");
+        Navigation.NavigateTo($"/comprar-entradas/{id}/{titulo}");
     }
 
     private async Task MostrarImagenAmpliada()
