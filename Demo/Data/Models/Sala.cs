@@ -9,5 +9,6 @@ namespace Demo.Data.Models
         [Column("numero_sala")]
         public int NumeroSala { get; set; }
         public List<Sesion> Sesiones { get; set; } = new();
+        public List<Butaca> Butacas { get; set; } = new();
     }
 }
