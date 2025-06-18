@@ -9,6 +9,7 @@
 - Visualización del horario por sala y día.
 - Detalle de cada película con valoración de estrellas.
 - Compra de entradas con selección de consumibles.
+- Selección y reserva de asientos en las diferentes salas.
 
 ## Vista previa
 
