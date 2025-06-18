@@ -23,6 +23,13 @@ builder.Services.AddMudServices();
 
 var app = builder.Build();
 
+// Apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CinemaDbContext>();
+    db.Database.Migrate();
+}
+
 // Configurar el middleware
 if (!app.Environment.IsDevelopment())
 {
