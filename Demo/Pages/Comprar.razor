@@ -61,6 +61,7 @@
                                             <MudIconButton Icon="@Icons.Material.Filled.EventSeat"
                                                            Disabled="@ocupado"
                                                            Color="@(ocupado ? Color.Error : seleccionado ? Color.Primary : Color.Default)"
+                                                           Style="@(ocupado || seleccionado ? null : "color: white;")"
                                                            OnClick="() => ToggleButaca(b)" />
                                         }
                                     }
