@@ -43,6 +43,31 @@
                         <MudText Typo="Typo.h4" Align="Align.Center">Elige los asientos y consumibles</MudText>
                         <MudDivider Class="my-2" />
 
+                        <div class="mb-3">
+                            @for (int f = 1; f <= filas; f++)
+                            {
+                                <div class="d-flex justify-center mb-1">
+                                    @for (int n = 1; n <= columnas; n++)
+                                    {
+                                        var b = butacas.FirstOrDefault(b => b.Fila == f && b.Numero == n);
+                                        if (b == null)
+                                        {
+                                            <MudIconButton Icon="@Icons.Material.Filled.EventSeat" Disabled="true" />
+                                        }
+                                        else
+                                        {
+                                            bool ocupado = reservadas.Contains(b.Id);
+                                            bool seleccionado = seleccionadas.Contains(b.Id);
+                                            <MudIconButton Icon="@Icons.Material.Filled.EventSeat"
+                                                           Disabled="@ocupado"
+                                                           Color="@(ocupado ? Color.Error : seleccionado ? Color.Primary : Color.Default)"
+                                                           OnClick="() => ToggleButaca(b)" />
+                                        }
+                                    }
+                                </div>
+                            }
+                        </div>
+
                         @foreach (var item in productos)
                         {
                             <MudGrid Class="mb-2">
@@ -115,6 +140,11 @@
 
     private Sesion? sesion;
     private List<Producto> productos = new();
+    private List<Butaca> butacas = new();
+    private HashSet<int> reservadas = new();
+    private HashSet<int> seleccionadas = new();
+    private int filas;
+    private int columnas;
     private int total => productos.Sum(p => p.Cantidad * p.Precio);
 
     protected override async Task OnInitializedAsync()
@@ -137,6 +167,21 @@
             return;
         }
 
+        butacas = await DbContext.Butacas
+            .Where(b => b.IdSala == sesion.IdSala)
+            .OrderBy(b => b.Fila)
+            .ThenBy(b => b.Numero)
+            .ToListAsync();
+
+        reservadas = (await DbContext.Reservas
+            .Where(r => r.IdSesion == sesion.Id)
+            .ToListAsync())
+            .Select(r => r.IdButaca)
+            .ToHashSet();
+
+        filas = butacas.Max(b => b.Fila);
+        columnas = butacas.Max(b => b.Numero);
+
         productos = new List<Producto>
         {
             new Producto("Entradas", 5),
@@ -151,11 +196,36 @@
 
     private void CambiarCantidad(Producto producto, int cantidad)
     {
+        if (producto.Nombre == "Entradas")
+            return;
+
         producto.Cantidad = Math.Max(0, producto.Cantidad + cantidad);
+    }
+
+    private void ToggleButaca(Butaca butaca)
+    {
+        if (reservadas.Contains(butaca.Id))
+            return;
+
+        if (!seleccionadas.Add(butaca.Id))
+            seleccionadas.Remove(butaca.Id);
+
+        productos.First(p => p.Nombre == "Entradas").Cantidad = seleccionadas.Count;
     }
 
     private async Task ConfirmarCompra()
     {
+        foreach (var idButaca in seleccionadas)
+        {
+            DbContext.Reservas.Add(new Reserva
+            {
+                IdSesion = sesion!.Id,
+                IdButaca = idButaca
+            });
+        }
+
+        await DbContext.SaveChangesAsync();
+
         await DialogService.ShowMessageBox("Compra realizada", "Tu compra se ha realizado con éxito.");
         Navigation.NavigateTo("/");
     }

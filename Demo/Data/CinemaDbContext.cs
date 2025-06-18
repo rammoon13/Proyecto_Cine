@@ -12,6 +12,8 @@ namespace Demo.Data
         public DbSet<Dia> Dia { get; set; }
         public DbSet<Sesion> Sesion { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Butaca> Butacas { get; set; }
+        public DbSet<Reserva> Reservas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +32,25 @@ namespace Demo.Data
                 .HasOne(s => s.Dia)
                 .WithMany(d => d.Sesiones)
                 .HasForeignKey(s => s.IdDia);
+
+            modelBuilder.Entity<Butaca>()
+                .HasOne(b => b.Sala)
+                .WithMany(s => s.Butacas)
+                .HasForeignKey(b => b.IdSala);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Sesion)
+                .WithMany()
+                .HasForeignKey(r => r.IdSesion);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Butaca)
+                .WithMany(b => b.Reservas)
+                .HasForeignKey(r => r.IdButaca);
+
+            modelBuilder.Entity<Reserva>()
+                .HasIndex(r => new { r.IdSesion, r.IdButaca })
+                .IsUnique();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
 
 namespace Demo.Data.Models
 {
@@ -17,5 +17,6 @@ namespace Demo.Data.Models
         [Column("id_dia")]
         public int IdDia { get; set; }
         public Dia Dia { get; set; }
+        public List<Reserva> Reservas { get; set; } = new();
     }
 }
