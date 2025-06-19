@@ -104,15 +104,18 @@
             return;
         }
 
-        usuario.NombreUsuario = registroSocio.NombreUsuario;
-        usuario.Nombre = registroSocio.Nombre;
-        usuario.Apellidos = registroSocio.Apellidos;
-        usuario.FechaNacimiento = registroSocio.FechaNacimiento!.Value;
-        usuario.Ciudad = registroSocio.Ciudad;
-        usuario.PeliculaFavorita = registroSocio.PeliculaFavorita;
-        usuario.Telefono = registroSocio.Telefono;
-        usuario.EsSocio = true;
+        var socio = new Socio
+        {
+            IdUsuario = usuario.Id,
+            Nombre = registroSocio.Nombre,
+            Apellidos = registroSocio.Apellidos,
+            FechaNacimiento = registroSocio.FechaNacimiento!.Value,
+            Ciudad = registroSocio.Ciudad,
+            PeliculaFavorita = registroSocio.PeliculaFavorita,
+            Telefono = registroSocio.Telefono
+        };
 
+        DbContext.Socios.Add(socio);
         await DbContext.SaveChangesAsync();
 
         await DialogService.ShowMessageBox("Registro exitoso", "Te has registrado correctamente como socio.", "Aceptar");

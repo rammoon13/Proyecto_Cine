@@ -180,6 +180,38 @@ namespace Demo.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CorreoElectronico")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("correo_electronico");
+
+                    b.Property<string>("Contrasena")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("contrasena");
+
+                    b.Property<string>("NombreUsuario")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nombre_usuario");
+
+                    b.Property<int>("Rol")
+                        .HasColumnType("int")
+                        .HasColumnName("rol");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Demo.Data.Models.Socio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Apellidos")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -188,23 +220,17 @@ namespace Demo.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CorreoElectronico")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("correo_electronico");
-
                     b.Property<DateTime>("FechaNacimiento")
                         .HasColumnType("datetime(6)")
                         .HasColumnName("fecha_nacimiento");
 
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int")
+                        .HasColumnName("id_usuario");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<string>("NombreUsuario")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("nombre_usuario");
 
                     b.Property<string>("PeliculaFavorita")
                         .IsRequired()
@@ -217,7 +243,18 @@ namespace Demo.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
+
+                    b.ToTable("Socios");
+
+                    b.HasOne("Demo.Data.Models.Usuario", "Usuario")
+                        .WithOne()
+                        .HasForeignKey("Demo.Data.Models.Socio", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Demo.Data.Models.Butaca", b =>
