@@ -13,10 +13,7 @@ namespace Demo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-
-
-            migrationBuilder.CreateTable(
-                name: "Butacas",
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "Dia",
@@ -74,25 +71,6 @@ namespace Demo.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     nombre_usuario = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    correo_electronico = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    contrasena = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    rol = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Socios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    id_usuario = table.Column<int>(type: "int", nullable: false),
                     Nombre = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Apellidos = table.Column<string>(type: "longtext", nullable: false)
@@ -102,18 +80,14 @@ namespace Demo.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     pelicula_favorita = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    correo_electronico = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Telefono = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Socios", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Socios_Usuarios_id_usuario",
-                        column: x => x.id_usuario,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Usuarios", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -208,12 +182,6 @@ namespace Demo.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Socios_id_usuario",
-                table: "Socios",
-                column: "id_usuario",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Butacas_IdSala",
                 table: "Butacas",
                 column: "IdSala");
@@ -255,9 +223,6 @@ namespace Demo.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Reservas");
-
-            migrationBuilder.DropTable(
-                name: "Socios");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
