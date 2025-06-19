@@ -4,8 +4,13 @@
 
 .top-row {
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.65);
+    color: white;
 }
+
+    .top-row ::deep a {
+        color: white;
+    }
 
 .navbar-brand {
     font-size: 1.1rem;
@@ -32,7 +37,7 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
+        color: white;
         border-radius: 4px;
         height: 3rem;
         display: flex;
