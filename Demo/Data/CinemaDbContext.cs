@@ -12,7 +12,6 @@ namespace Demo.Data
         public DbSet<Dia> Dia { get; set; }
         public DbSet<Sesion> Sesion { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Socio> Socios { get; set; }
         public DbSet<Butaca> Butacas { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
 
@@ -57,11 +56,6 @@ namespace Demo.Data
             modelBuilder.Entity<Reserva>()
                 .HasIndex(r => new { r.IdSesion, r.IdButaca })
                 .IsUnique();
-
-            modelBuilder.Entity<Socio>()
-                .HasOne(s => s.Usuario)
-                .WithOne()
-                .HasForeignKey<Socio>(s => s.IdUsuario);
         }
     }
 }
