@@ -5,6 +5,7 @@
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 @inject CinemaDbContext DbContext
+@inject UserState UserState
 
 <style>
     .borde-redondeado {
@@ -256,12 +257,18 @@
 
     private async Task ConfirmarCompra()
     {
+        if (UserState.Usuario == null)
+        {
+            await DialogService.ShowMessageBox("Error", "Debe iniciar sesi\u00f3n para realizar la compra.");
+            return;
+        }
         foreach (var idButaca in seleccionadas)
         {
             DbContext.Reservas.Add(new Reserva
             {
                 IdSesion = sesion!.Id,
-                IdButaca = idButaca
+                IdButaca = idButaca,
+                IdUsuario = UserState.Usuario.Id
             });
         }
 

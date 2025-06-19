@@ -17,5 +17,14 @@ namespace Demo.Data.Models
         [Column("correo_electronico")]
         public string CorreoElectronico { get; set; }
         public string Telefono { get; set; }
+
+        [Column("contrasena")]
+        public string Contrasena { get; set; }
+
+        [Column("rol")]
+        public Rol Rol { get; set; } = Rol.Cliente;
+
+        [Column("es_socio")]
+        public bool EsSocio { get; set; } = false;
     }
 }
