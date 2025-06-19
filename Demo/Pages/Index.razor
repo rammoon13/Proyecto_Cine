@@ -9,28 +9,6 @@
 <PageTitle>Cartelera de Cine</PageTitle>
 
 <MudGrid Justify="Justify.Center" Class="paginaPrincipal">
-    <!-- Columna de anuncios en el lado izquierdo -->
-    <MudContainer Class="anuncioLateralContainer fixed-container-izquierda mt-4">
-        <MudPaper Class="anuncioLateral">
-            <MudText Typo="Typo.h5" Align="Align.Center">¡¡COMPRA PALOMITAS YAA!!</MudText>
-            <MudDivider Class="my-4" />
-            <MudImage Src="images/palomitas.jpg" Alt="Palomitas de maíz" MaxWidth="300px" Class="mx-auto" />
-            <MudText Align="Align.Center">
-                ¡Disfruta de nuestras deliciosas palomitas! Siendo socio, llévate un combo grande con un refresco y recibe un descuento especial en tu próxima película.
-            </MudText>
-            <MudButton Variant="Variant.Filled" Class="socio" FullWidth="true" OnClick="HacerseSocio">
-                Hazte Socio Ya
-            </MudButton>
-        </MudPaper>
-
-        <MudPaper Class="anuncioLateral mt-3">
-            <MudText Typo="Typo.h5" Align="Align.Center">TUS DECISIONES NOS IMPORTAN</MudText>
-            <MudDivider Class="my-4" />
-            <MudText Align="Align.Center">El efecto mariposa, una pelicula que te hará pensar en tus decisiones y tus actos.Disfrutala ahora solo aqui.</MudText>
-            <MudImage Src="images/click.png" @onclick="Estreno" Alt="Click here" MaxWidth="300px" Class="mx-auto" />
-        </MudPaper>
-    </MudContainer>
-
     <!-- Columna central para la cartelera de cine -->
     <MudItem xs="12" sm="8" md="8">
         <MudContainer MaxWidth="MaxWidth.Large" Class="barraBusqueda">
@@ -97,29 +75,6 @@
         <MudContainer Style="height: 170px;"></MudContainer>
     </MudItem>
     
-
-    <!-- Columna de anuncios en el lado derecho -->
-    <MudContainer Class="anuncioLateralContainer fixed-container-derecha mt-4">
-        <MudPaper Class="anuncioLateral">
-            <MudText Typo="Typo.h5" Align="Align.Center">ÚLTIMA LLAMADA A TODOS LOS PIRATAS</MudText>
-            <MudDivider Class="my-4" />
-            <MudText Align="Align.Center">
-                ¡La última oportunidad para zarpar hacia nuevas aventuras! No te pierdas la última sesión de Piratas del Caribe en pantalla grande, con sorpresas y un ambiente de pirata único. ¡Prepara tu parche y tu espada, porque el barco zarpa pronto!
-            </MudText>
-            <MudImage Src="images/mapa.png" @onclick="Despedida" Alt="Click here" MaxWidth="300px" Class="mx-auto" />
-        </MudPaper>
-
-        <MudPaper Class="anuncioLateral mt-3">
-            <MudText Typo="Typo.h5" Align="Align.Center">LOS VIERNES DEL ESPECTADOR</MudText>
-            <MudDivider Class="my-4" />
-            <MudText Align="Align.Center">
-                Todos los viernes te espera un gran descuento en tu entrada. Por la compra de un paquete de 500g de palomitas, obtén tu entrada <u><b>GRATIS</b></u> y disfruta durante toda la película con la gran cantidad de palomitas.
-            </MudText>
-            <MudDivider Class="my-4" />
-            <MudText Align="Align.Center">**REFRESCOS/BEBIDAS NO INCLUIDAS**</MudText>
-        </MudPaper>
-    </MudContainer>
-
     <MudContainer Class="contactosPrincipal">
         <MudText Typo="Typo.h4"><u>Contáctenos</u></MudText>
         <br />
