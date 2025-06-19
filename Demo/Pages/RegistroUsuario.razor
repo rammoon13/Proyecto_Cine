@@ -1,0 +1,55 @@
+@page "/registro"
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject CinemaDbContext DbContext
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+
+<MudPaper Class="p-4 mt-4" Style="max-width:500px;margin:auto">
+    <MudText Typo="Typo.h5" Class="mb-2">Registro de usuario</MudText>
+    <EditForm Model="modelo" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <MudTextField @bind-Value="modelo.NombreUsuario" Label="Usuario" Required="true" Class="mb-2" />
+        <MudTextField @bind-Value="modelo.Correo" Label="Correo" Required="true" Class="mb-2" />
+        <MudTextField @bind-Value="modelo.Contrasena" Label="Contraseña" InputType="InputType.Password" Required="true" Class="mb-2" />
+        <MudSelect T="Rol" @bind-Value="modelo.Rol" Label="Rol" Class="mb-2">
+            <MudSelectItem Value="Rol.Cliente">Cliente</MudSelectItem>
+            <MudSelectItem Value="Rol.Administrador">Administrador</MudSelectItem>
+        </MudSelect>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Registrar</MudButton>
+    </EditForm>
+</MudPaper>
+
+@code {
+    private Registro modelo = new() { Rol = Rol.Cliente };
+
+    private async Task HandleRegister()
+    {
+        var existe = await DbContext.Usuarios.AnyAsync(u => u.NombreUsuario == modelo.NombreUsuario || u.CorreoElectronico == modelo.Correo);
+        if (existe)
+        {
+            Snackbar.Add("El usuario o correo ya existe", Severity.Error);
+            return;
+        }
+        var usuario = new Usuario
+        {
+            NombreUsuario = modelo.NombreUsuario,
+            CorreoElectronico = modelo.Correo,
+            Contrasena = modelo.Contrasena,
+            Rol = modelo.Rol
+        };
+        DbContext.Usuarios.Add(usuario);
+        await DbContext.SaveChangesAsync();
+        Snackbar.Add("Registro completado", Severity.Success);
+        Nav.NavigateTo("/login");
+    }
+
+    class Registro
+    {
+        public string NombreUsuario { get; set; }
+        public string Correo { get; set; }
+        public string Contrasena { get; set; }
+        public Rol Rol { get; set; }
+    }
+}

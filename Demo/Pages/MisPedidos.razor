@@ -1,0 +1,56 @@
+@page "/mis-pedidos"
+@using Demo.Data
+@using Demo.Data.Models
+@using Microsoft.EntityFrameworkCore
+@inject CinemaDbContext DbContext
+@inject UserState UserState
+
+@if (UserState.Usuario == null)
+{
+    <MudText Typo="Typo.h6">Debe iniciar sesión para ver sus pedidos.</MudText>
+}
+else if (reservas == null)
+{
+    <MudText Typo="Typo.h6">Cargando...</MudText>
+}
+else if (!reservas.Any())
+{
+    <MudText Typo="Typo.h6">No tiene pedidos.</MudText>
+}
+else
+{
+    <MudTable Items="reservas">
+        <HeaderContent>
+            <MudTh>Día</MudTh>
+            <MudTh>Sala</MudTh>
+            <MudTh>Hora</MudTh>
+            <MudTh>Película</MudTh>
+            <MudTh>Asiento</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Sesion.Dia.DiaSemana</MudTd>
+            <MudTd>@context.Sesion.Sala.NumeroSala</MudTd>
+            <MudTd>@context.Sesion.Hora</MudTd>
+            <MudTd>@context.Sesion.Pelicula.Nombre</MudTd>
+            <MudTd>@($"{context.Butaca.Numero}-{(char)('A'+context.Butaca.Fila-1)}")</MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    private List<Reserva>? reservas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserState.Usuario != null)
+        {
+            reservas = await DbContext.Reservas
+                .Include(r => r.Sesion).ThenInclude(s => s.Sala)
+                .Include(r => r.Sesion).ThenInclude(s => s.Dia)
+                .Include(r => r.Sesion).ThenInclude(s => s.Pelicula)
+                .Include(r => r.Butaca)
+                .Where(r => r.IdUsuario == UserState.Usuario.Id)
+                .ToListAsync();
+        }
+    }
+}

@@ -95,28 +95,24 @@
 
     private async Task HandleValidSubmit()
     {
-        var usuarioExistente = await DbContext.Usuarios
-            .FirstOrDefaultAsync(u => u.NombreUsuario == registroSocio.NombreUsuario || u.CorreoElectronico == registroSocio.CorreoElectronico);
+        var usuario = await DbContext.Usuarios
+            .FirstOrDefaultAsync(u => u.CorreoElectronico == registroSocio.CorreoElectronico);
 
-        if (usuarioExistente != null)
+        if (usuario == null)
         {
-            await DialogService.ShowMessageBox("Error", "El nombre de usuario o correo electrónico ya está en uso.", "Aceptar");
+            await DialogService.ShowMessageBox("Error", "Debe registrarse como usuario antes de hacerse socio.", "Aceptar");
             return;
         }
 
-        var nuevoUsuario = new Usuario
-            {
-                NombreUsuario = registroSocio.NombreUsuario,
-                Nombre = registroSocio.Nombre,
-                Apellidos = registroSocio.Apellidos,
-                FechaNacimiento = registroSocio.FechaNacimiento.Value,
-                Ciudad = registroSocio.Ciudad,
-                PeliculaFavorita = registroSocio.PeliculaFavorita,
-                CorreoElectronico = registroSocio.CorreoElectronico,
-                Telefono = registroSocio.Telefono
-            };
+        usuario.NombreUsuario = registroSocio.NombreUsuario;
+        usuario.Nombre = registroSocio.Nombre;
+        usuario.Apellidos = registroSocio.Apellidos;
+        usuario.FechaNacimiento = registroSocio.FechaNacimiento!.Value;
+        usuario.Ciudad = registroSocio.Ciudad;
+        usuario.PeliculaFavorita = registroSocio.PeliculaFavorita;
+        usuario.Telefono = registroSocio.Telefono;
+        usuario.EsSocio = true;
 
-        DbContext.Usuarios.Add(nuevoUsuario);
         await DbContext.SaveChangesAsync();
 
         await DialogService.ShowMessageBox("Registro exitoso", "Te has registrado correctamente como socio.", "Aceptar");

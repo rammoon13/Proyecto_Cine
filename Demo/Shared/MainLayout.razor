@@ -3,15 +3,22 @@
 
 <PageTitle>Demo</PageTitle>
 
-<MudThemeProvider/>
-<MudDialogProvider/>
+<MudThemeProvider />
+<MudDialogProvider />
 <MudPopoverProvider />
-<MudSnackbarProvider/>
+<MudSnackbarProvider />
 
-<div class="page">
-    <main>
-        <article class="content px-4">
+<MudLayout>
+    <MudDrawer Open="true" Variant="DrawerVariant.Persistent" Class="sidebar">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudAppBar Color="Color.Primary">
+            <MudText Typo="Typo.h6">Proyecto Cine</MudText>
+        </MudAppBar>
+        <div class="content px-4">
             @Body
-        </article>
-    </main>
-</div>
+        </div>
+    </MudMainContent>
+</MudLayout>

@@ -49,6 +49,11 @@ namespace Demo.Data
                 .HasForeignKey(r => r.IdButaca);
 
             modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Usuario)
+                .WithMany()
+                .HasForeignKey(r => r.IdUsuario);
+
+            modelBuilder.Entity<Reserva>()
                 .HasIndex(r => new { r.IdSesion, r.IdButaca })
                 .IsUnique();
         }

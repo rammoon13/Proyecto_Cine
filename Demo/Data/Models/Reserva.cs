@@ -7,5 +7,8 @@ namespace Demo.Data.Models
         public Sesion Sesion { get; set; }
         public int IdButaca { get; set; }
         public Butaca Butaca { get; set; }
+
+        public int IdUsuario { get; set; }
+        public Usuario Usuario { get; set; }
     }
 }
