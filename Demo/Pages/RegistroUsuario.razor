@@ -2,6 +2,7 @@
 @using Demo.Data
 @using Demo.Data.Models
 @using Microsoft.EntityFrameworkCore
+@using System.Diagnostics
 @inject CinemaDbContext DbContext
 @inject NavigationManager Nav
 @inject ISnackbar Snackbar
@@ -10,14 +11,19 @@
     <MudText Typo="Typo.h5" Class="mb-2">Registro de usuario</MudText>
     <EditForm Model="modelo" OnValidSubmit="HandleRegister">
         <DataAnnotationsValidator />
+
         <MudTextField @bind-Value="modelo.NombreUsuario" Label="Usuario" Required="true" Class="mb-2" />
         <MudTextField @bind-Value="modelo.CorreoElectronico" Label="Correo" Required="true" Class="mb-2" />
         <MudTextField @bind-Value="modelo.Contrasena" Label="Contraseña" InputType="InputType.Password" Required="true" Class="mb-2" />
+
         <MudSelect T="Rol" @bind-Value="modelo.Rol" Label="Rol" Class="mb-2">
             <MudSelectItem Value="Rol.Cliente">Cliente</MudSelectItem>
             <MudSelectItem Value="Rol.Administrador">Administrador</MudSelectItem>
         </MudSelect>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Registrar</MudButton>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+            Registrar
+        </MudButton>
     </EditForm>
 </MudPaper>
 
@@ -26,20 +32,38 @@
 
     private async Task HandleRegister()
     {
-        var existe = await DbContext.Usuarios
-            .AnyAsync(u => u.NombreUsuario == modelo.NombreUsuario ||
-                           u.CorreoElectronico == modelo.CorreoElectronico);
+        Debug.WriteLine("Intentando registrar usuario...");
+        Debug.WriteLine($"Usuario: {modelo.NombreUsuario}");
+        Debug.WriteLine($"Correo: {modelo.CorreoElectronico}");
+        Debug.WriteLine($"Contraseña: {modelo.Contrasena}");
+        Debug.WriteLine($"Rol: {modelo.Rol}");
 
-        if (existe)
+        try
         {
-            Snackbar.Add("El usuario o correo ya existe", Severity.Error);
-            return;
+            var existe = await DbContext.Usuarios
+                .AnyAsync(u => u.NombreUsuario == modelo.NombreUsuario ||
+                               u.CorreoElectronico == modelo.CorreoElectronico);
+
+            Debug.WriteLine($"¿Existe ya un usuario con ese nombre o correo?: {existe}");
+
+            if (existe)
+            {
+                Snackbar.Add("El usuario o correo ya existe", Severity.Error);
+                return;
+            }
+
+            DbContext.Usuarios.Add(modelo);
+            await DbContext.SaveChangesAsync();
+
+            Debug.WriteLine("Usuario registrado con éxito");
+
+            Snackbar.Add("Registro completado", Severity.Success);
+            Nav.NavigateTo("/login");
         }
-
-        DbContext.Usuarios.Add(modelo);
-        await DbContext.SaveChangesAsync();
-
-        Snackbar.Add("Registro completado", Severity.Success);
-        Nav.NavigateTo("/login");
+        catch (Exception ex)
+        {
+            Debug.WriteLine("ERROR en el registro: " + ex.Message);
+            Snackbar.Add("Error al registrar: " + ex.Message, Severity.Error);
+        }
     }
 }
