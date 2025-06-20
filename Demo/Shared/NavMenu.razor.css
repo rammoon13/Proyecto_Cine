@@ -1,3 +1,4 @@
+/* Estilos generales de la barra lateral */
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -45,14 +46,29 @@
         line-height: 3rem;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
+        .nav-item ::deep a.active {
+            background-color: rgba(255,255,255,0.25);
+            color: white;
+        }
+
+        .nav-item ::deep a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+/* Fuerza iconos blancos completamente */
+::deep .mud-nav-link .mud-icon-root {
+    color: white !important;
+    fill: white !important;
 }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    ::deep .mud-nav-link .mud-icon-root svg {
+        color: white !important;
+        fill: white !important;
+    }
+
+::deep .mud-icon-root {
+    font-size: 1.6rem !important;
 }
 
 @media (min-width: 641px) {
@@ -61,7 +77,6 @@
     }
 
     .collapse {
-        /* Never collapse the sidebar for wide screens */
         display: block;
     }
 }

@@ -3,22 +3,41 @@
 @inject NavigationManager Nav
 @inject UserState UserState
 
-<MudNavMenu>
-    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Inicio</MudNavLink>
-    <MudNavLink Href="/mis-pedidos" Icon="@Icons.Material.Filled.List" Disabled="@(UserState.Usuario==null)">Mis pedidos</MudNavLink>
-    <MudNavLink Href="/hacerse-socio" Icon="@Icons.Material.Filled.CardMembership">Hacerse socio</MudNavLink>
+<MudNavMenu Class="custom-nav">
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" Style="color:white; font-size: 1.2rem;">
+        Inicio
+    </MudNavLink>
+
+    <MudNavLink Href="/mis-pedidos" Icon="@Icons.Material.Filled.List" Disabled="@(UserState.Usuario==null)" Style="color:white; font-size: 1.2rem;">
+        Mis pedidos
+    </MudNavLink>
+
+    <MudNavLink Href="/hacerse-socio" Icon="@Icons.Material.Filled.CardMembership" Style="color:white; font-size: 1.2rem;">
+        Hacerse socio
+    </MudNavLink>
+
     @if (UserState.Usuario == null)
     {
-        <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">Iniciar sesión</MudNavLink>
-        <MudNavLink Href="/registro" Icon="@Icons.Material.Filled.PersonAdd">Registrarse</MudNavLink>
+        <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login" Style="color:white; font-size: 1.2rem;">
+            Iniciar sesión
+        </MudNavLink>
+
+        <MudNavLink Href="/registro" Icon="@Icons.Material.Filled.PersonAdd" Style="color:white; font-size: 1.2rem;">
+            Registrarse
+        </MudNavLink>
     }
     else
     {
         @if (UserState.Usuario.Rol == Rol.Administrador)
         {
-            <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.AdminPanelSettings">Administración</MudNavLink>
+            <MudNavLink Href="/admin" Icon="@Icons.Material.Filled.AdminPanelSettings" Style="color:white; font-size: 1.2rem;">
+                Administración
+            </MudNavLink>
         }
-        <MudNavLink Href="" OnClick="Logout" Icon="@Icons.Material.Filled.ExitToApp">Cerrar sesión</MudNavLink>
+
+        <MudNavLink Href="" OnClick="Logout" Icon="@Icons.Material.Filled.ExitToApp" Style="color:white; font-size: 1.2rem;">
+            Cerrar sesión
+        </MudNavLink>
     }
 </MudNavMenu>
 
