@@ -1,5 +1,6 @@
 ﻿@using MudBlazor
 @inherits LayoutComponentBase
+@inject UserState UserState
 
 <PageTitle>Demo</PageTitle>
 
@@ -14,7 +15,7 @@
     </div>
     <div class="main-content">
         <div class="custom-appbar">
-            <h2>Bienvenido</h2>
+            <h2>Bienvenido@(UserState.Usuario != null ? $" {UserState.Usuario.NombreUsuario}" : "")</h2>
         </div>
         <div class="content-body">
             @Body
