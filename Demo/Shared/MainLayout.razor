@@ -10,15 +10,15 @@
 <MudSnackbarProvider />
 
 <div class="main-layout">
-    <div class="custom-sidebar">
+    <aside class="custom-sidebar">
         <NavMenu />
-    </div>
+    </aside>
     <div class="main-content">
-        <div class="custom-appbar">
+        <header class="custom-appbar">
             <h2>Bienvenido@(UserState.Usuario != null ? $" {UserState.Usuario.NombreUsuario}" : "")</h2>
-        </div>
-        <div class="content-body">
+        </header>
+        <main class="content-body">
             @Body
-        </div>
+        </main>
     </div>
 </div>
