@@ -37,3 +37,15 @@
 .content-body {
     padding: 1rem;
 }
+
+@media (max-width: 640px) {
+    .custom-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
