@@ -1,4 +1,8 @@
 /* Estilos generales de la barra lateral */
+.custom-nav {
+    display: flex;
+    flex-direction: column;
+}
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
