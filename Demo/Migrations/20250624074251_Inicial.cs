@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Demo.Migrations
 {
     /// <inheritdoc />
-    public partial class Butacasyreservas : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -71,19 +71,12 @@ namespace Demo.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     nombre_usuario = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Nombre = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Apellidos = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    fecha_nacimiento = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Ciudad = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    pelicula_favorita = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     correo_electronico = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Telefono = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    contrasena = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    rol = table.Column<int>(type: "int", nullable: false),
+                    es_socio = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,6 +142,37 @@ namespace Demo.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Socios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nombre = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Apellidos = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaNacimiento = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Ciudad = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Telefono = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    pelicula_favorita = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Socios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Socios_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Reservas",
                 columns: table => new
                 {
@@ -156,6 +180,7 @@ namespace Demo.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     IdSesion = table.Column<int>(type: "int", nullable: false),
                     IdButaca = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
                     SesionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -178,6 +203,12 @@ namespace Demo.Migrations
                         column: x => x.SesionId,
                         principalTable: "Sesion",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reservas_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -198,6 +229,11 @@ namespace Demo.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Reservas_IdUsuario",
+                table: "Reservas",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reservas_SesionId",
                 table: "Reservas",
                 column: "SesionId");
@@ -216,6 +252,12 @@ namespace Demo.Migrations
                 name: "IX_Sesion_id_sala",
                 table: "Sesion",
                 column: "id_sala");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Socios_UsuarioId",
+                table: "Socios",
+                column: "UsuarioId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -225,13 +267,16 @@ namespace Demo.Migrations
                 name: "Reservas");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Socios");
 
             migrationBuilder.DropTable(
                 name: "Butacas");
 
             migrationBuilder.DropTable(
                 name: "Sesion");
+
+            migrationBuilder.DropTable(
+                name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Dia");

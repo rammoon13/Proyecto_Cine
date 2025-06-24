@@ -103,12 +103,17 @@ namespace Demo.Migrations
                     b.Property<int>("IdSesion")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SesionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdButaca");
+
+                    b.HasIndex("IdUsuario");
 
                     b.HasIndex("SesionId");
 
@@ -169,7 +174,7 @@ namespace Demo.Migrations
                     b.ToTable("Sesion");
                 });
 
-            modelBuilder.Entity("Demo.Data.Models.Usuario", b =>
+            modelBuilder.Entity("Demo.Data.Models.Socio", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -185,23 +190,12 @@ namespace Demo.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CorreoElectronico")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("correo_electronico");
-
                     b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("fecha_nacimiento");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<string>("NombreUsuario")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("nombre_usuario");
 
                     b.Property<string>("PeliculaFavorita")
                         .IsRequired()
@@ -211,6 +205,48 @@ namespace Demo.Migrations
                     b.Property<string>("Telefono")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
+
+                    b.ToTable("Socios");
+                });
+
+            modelBuilder.Entity("Demo.Data.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Contrasena")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("contrasena");
+
+                    b.Property<string>("CorreoElectronico")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("correo_electronico");
+
+                    b.Property<bool>("EsSocio")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("es_socio");
+
+                    b.Property<string>("NombreUsuario")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("nombre_usuario");
+
+                    b.Property<int>("Rol")
+                        .HasColumnType("int")
+                        .HasColumnName("rol");
 
                     b.HasKey("Id");
 
@@ -242,6 +278,12 @@ namespace Demo.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Demo.Data.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Demo.Data.Models.Sesion", null)
                         .WithMany("Reservas")
                         .HasForeignKey("SesionId");
@@ -249,6 +291,8 @@ namespace Demo.Migrations
                     b.Navigation("Butaca");
 
                     b.Navigation("Sesion");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Demo.Data.Models.Sesion", b =>
@@ -278,6 +322,17 @@ namespace Demo.Migrations
                     b.Navigation("Sala");
                 });
 
+            modelBuilder.Entity("Demo.Data.Models.Socio", b =>
+                {
+                    b.HasOne("Demo.Data.Models.Usuario", "Usuario")
+                        .WithOne("Socio")
+                        .HasForeignKey("Demo.Data.Models.Socio", "UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Demo.Data.Models.Butaca", b =>
                 {
                     b.Navigation("Reservas");
@@ -303,6 +358,11 @@ namespace Demo.Migrations
             modelBuilder.Entity("Demo.Data.Models.Sesion", b =>
                 {
                     b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("Demo.Data.Models.Usuario", b =>
+                {
+                    b.Navigation("Socio");
                 });
 #pragma warning restore 612, 618
         }

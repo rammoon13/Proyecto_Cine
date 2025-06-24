@@ -95,8 +95,8 @@
 
     private async Task HandleValidSubmit()
     {
-        var usuario = await DbContext.Usuarios
-            .FirstOrDefaultAsync(u => u.CorreoElectronico == registroSocio.CorreoElectronico);
+        var usuario = await DbContext.Socios
+            .FirstOrDefaultAsync(u => u.Usuario.CorreoElectronico == registroSocio.CorreoElectronico);
 
         if (usuario == null)
         {
@@ -104,14 +104,14 @@
             return;
         }
 
-        usuario.NombreUsuario = registroSocio.NombreUsuario;
+        usuario.Usuario.NombreUsuario = registroSocio.NombreUsuario;
         usuario.Nombre = registroSocio.Nombre;
         usuario.Apellidos = registroSocio.Apellidos;
         usuario.FechaNacimiento = registroSocio.FechaNacimiento!.Value;
         usuario.Ciudad = registroSocio.Ciudad;
         usuario.PeliculaFavorita = registroSocio.PeliculaFavorita;
         usuario.Telefono = registroSocio.Telefono;
-        usuario.EsSocio = true;
+        usuario.Usuario.EsSocio = true;
 
         await DbContext.SaveChangesAsync();
 
