@@ -9,6 +9,10 @@ namespace Demo.Data
         private readonly ProtectedSessionStorage _sessionStorage;
         private readonly CinemaDbContext _context;
 
+        public event Action? OnChange;
+
+        private void NotifyStateChanged() => OnChange?.Invoke();
+
         public UserState(ProtectedSessionStorage sessionStorage, CinemaDbContext context)
         {
             _sessionStorage = sessionStorage;
@@ -23,6 +27,7 @@ namespace Demo.Data
             if (storedId.Success && storedId.Value.HasValue)
             {
                 Usuario = await _context.Usuarios.FindAsync(storedId.Value.Value);
+                NotifyStateChanged();
             }
         }
 
@@ -30,12 +35,14 @@ namespace Demo.Data
         {
             Usuario = usuario;
             await _sessionStorage.SetAsync(SessionKey, usuario.Id);
+            NotifyStateChanged();
         }
 
         public async Task Logout()
         {
             Usuario = null;
             await _sessionStorage.DeleteAsync(SessionKey);
+            NotifyStateChanged();
         }
     }
 }
