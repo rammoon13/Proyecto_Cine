@@ -2,6 +2,7 @@
 @using Demo.Data.Models
 @inject NavigationManager Nav
 @inject UserState UserState
+@implements IDisposable
 
 <MudNavMenu Class="custom-nav">
     <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All" Style="color:white; font-size: 1.2rem;">
@@ -46,5 +47,15 @@
     {
         await UserState.Logout();
         Nav.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserState.OnChange -= StateHasChanged;
     }
 }
