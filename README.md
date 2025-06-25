@@ -1,17 +1,34 @@
-# Proyecto Cine
+# 🎬 Proyecto Cine
 
-¡Bienvenido al proyecto **Cine**! Esta aplicación web desarrollada en **ASP.NET Core** y **MudBlazor** te permite gestionar una cartelera de películas, consultar sus detalles e incluso comprar entradas.
+¡Bienvenido a **Proyecto Cine**!  
+Esta es una aplicación web desarrollada en **ASP.NET Core Blazor Server** con **MudBlazor** para ofrecer una experiencia interactiva, moderna y fluida en la gestión de una cartelera de cine.
 
-## Características principales
+---
 
-- Catálogo de películas con carteles y descripciones.
-- Filtrado y búsqueda rápida por título.
-- Visualización del horario por sala y día.
-- Detalle de cada película con valoración de estrellas.
-- Compra de entradas con selección de consumibles.
-- Selección y reserva de asientos en las diferentes salas.
+## 🚀 Características principales
 
-## Vista previa
+- 🎞️ **Catálogo interactivo de películas** con carteles, descripciones y valoración por estrellas.
+- 🔍 **Filtrado y búsqueda dinámica** por título.
+- 🕒 **Visualización del horario por sala y día**.
+- 🛒 **Compra de entradas** con selección de consumibles y asientos.
+- 🪑 **Selector visual de butacas** por sala y sesión.
+- 📋 **Panel de administración** accesible solo para usuarios con rol de administrador.
+
+---
+
+## 🔐 Autenticación y gestión de sesión
+
+La aplicación incluye un sistema completo de gestión de usuarios, desarrollado con buenas prácticas de estado en Blazor Server:
+
+- ✅ Inicio de sesión persistente con `ProtectedSessionStorage`.
+- 👋 Muestra personalizada de bienvenida: “Bienvenido, [nombre del usuario]”.
+- 🔄 Renderizado dinámico del menú: los botones **“Iniciar sesión”** y **“Registrarse”** desaparecen automáticamente cuando el usuario está autenticado.
+- 🚪 Confirmación elegante al cerrar sesión: se utiliza `MudBlazor.ShowMessageBox()` para mostrar un diálogo modal que pregunta al usuario si realmente desea cerrar sesión.
+- 🧠 El estado del usuario se gestiona globalmente a través de un servicio `UserState` inyectado en toda la aplicación.
+
+---
+
+## 🖼️ Vista previa
 
 <p align="center">
   <img src="Demo/wwwroot/images/spiderman.jpg" alt="Spiderman" width="300"/>
@@ -23,12 +40,16 @@
   <img src="Demo/wwwroot/images/sala.jpg" alt="Sala de cine" width="600"/>
 </p>
 
-## Requisitos
+---
 
-- **.NET 9 SDK**
-- Un servidor MySQL para la base de datos
+## 🛠️ Requisitos técnicos
 
-## Ejecución rápida
+- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- Servidor MySQL para la base de datos
+
+---
+
+## 🧪 Ejecución rápida
 
 1. Restaura las dependencias y compila el proyecto:
    ```bash
