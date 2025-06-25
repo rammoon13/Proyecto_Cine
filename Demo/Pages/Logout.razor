@@ -1,0 +1,15 @@
+@page "/logout"
+@inject UserState UserState
+@inject NavigationManager Nav
+
+<PageTitle>Cerrar sesión</PageTitle>
+
+<h3>Cerrando sesión...</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await UserState.Logout();
+        Nav.NavigateTo("/");
+    }
+}
