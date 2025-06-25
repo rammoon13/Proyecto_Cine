@@ -42,9 +42,9 @@
 </MudNavMenu>
 
 @code {
-    private void Logout()
+    private async Task Logout()
     {
-        UserState.Logout();
+        await UserState.Logout();
         Nav.NavigateTo("/");
     }
 }

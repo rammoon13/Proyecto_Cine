@@ -1,19 +1,41 @@
 using Demo.Data.Models;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Demo.Data
 {
     public class UserState
     {
-        public Usuario? Usuario { get; private set; }
+        private const string SessionKey = "current-user-id";
+        private readonly ProtectedSessionStorage _sessionStorage;
+        private readonly CinemaDbContext _context;
 
-        public void Login(Usuario usuario)
+        public UserState(ProtectedSessionStorage sessionStorage, CinemaDbContext context)
         {
-            Usuario = usuario;
+            _sessionStorage = sessionStorage;
+            _context = context;
         }
 
-        public void Logout()
+        public Usuario? Usuario { get; private set; }
+
+        public async Task InitializeAsync()
+        {
+            var storedId = await _sessionStorage.GetAsync<int?>(SessionKey);
+            if (storedId.Success && storedId.Value.HasValue)
+            {
+                Usuario = await _context.Usuarios.FindAsync(storedId.Value.Value);
+            }
+        }
+
+        public async Task Login(Usuario usuario)
+        {
+            Usuario = usuario;
+            await _sessionStorage.SetAsync(SessionKey, usuario.Id);
+        }
+
+        public async Task Logout()
         {
             Usuario = null;
+            await _sessionStorage.DeleteAsync(SessionKey);
         }
     }
 }

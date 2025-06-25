@@ -28,7 +28,7 @@
             Snackbar.Add("Credenciales incorrectas", Severity.Error);
             return;
         }
-        UserState.Login(usuario);
+        await UserState.Login(usuario);
         Nav.NavigateTo("/");
     }
 

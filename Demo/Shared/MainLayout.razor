@@ -22,3 +22,10 @@
         </main>
     </div>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await UserState.InitializeAsync();
+    }
+}
