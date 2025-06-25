@@ -2,6 +2,7 @@
 @using Demo.Data.Models
 @inject NavigationManager Nav
 @inject UserState UserState
+@inject IDialogService DialogService
 @implements IDisposable
 
 <MudNavMenu Class="custom-nav">
@@ -36,17 +37,32 @@
             </MudNavLink>
         }
 
-        <MudNavLink Href="" OnClick="Logout" Icon="@Icons.Material.Filled.ExitToApp" Style="color:white; font-size: 1.2rem;">
+        <MudNavLink Href="" OnClick="ShowLogoutConfirmation" Icon="@Icons.Material.Filled.ExitToApp" Style="color:white; font-size: 1.2rem;">
             Cerrar sesión
         </MudNavLink>
     }
 </MudNavMenu>
 
 @code {
-    private async Task Logout()
+    private async Task ShowLogoutConfirmation()
     {
-        await UserState.Logout();
-        Nav.NavigateTo("/");
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "¿Estás seguro de que quieres cerrar sesión?" },
+            { "ButtonText", "Cerrar sesión" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        var dialog = DialogService.Show<ConfirmLogoutDialog>("Confirmar cierre de sesión", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await UserState.Logout();
+            Nav.NavigateTo("/");
+        }
     }
 
     protected override void OnInitialized()
